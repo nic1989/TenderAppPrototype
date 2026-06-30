@@ -1,0 +1,50 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             String        @id @default(uuid())
+  name           String
+  email          String        @unique
+  password       String
+  createdAt      DateTime      @default(now())
+  organizationId String?
+  organization   Organization? @relation(fields: [organizationId], references: [id])
+}
+
+model Organization {
+  id        String   @id @default(uuid())
+  name      String
+  industry  String?
+  gstNumber String?
+  turnover  Float?
+  createdAt DateTime @default(now())
+  tenders   Tender[]
+  users     User[]
+}
+
+model Tender {
+  id             String           @id @default(uuid())
+  title          String
+  fileUrl        String
+  status         String
+  createdAt      DateTime         @default(now())
+  organizationId String
+  organization   Organization     @relation(fields: [organizationId], references: [id])
+  analyses       TenderAnalysis[]
+}
+
+model TenderAnalysis {
+  id          String @id @default(uuid())
+  summary     Json?
+  eligibility Json?
+  risks       Json?
+  score       Int?
+  tenderId    String
+  tender      Tender @relation(fields: [tenderId], references: [id])
+}

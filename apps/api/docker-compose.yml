@@ -1,0 +1,21 @@
+services:
+
+  postgres:
+    image: postgres:18
+    container_name: ai_bid_postgres
+
+    restart: always
+
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: ai_bid_assistant
+
+    ports:
+      - "5433:5433"
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
