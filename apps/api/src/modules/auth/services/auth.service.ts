@@ -14,15 +14,13 @@ export class AuthService {
   ) {}
 
   async register(dto: RegisterDto) {
-    console.log('services');
     const existingUser = await this.authRepository.findByEmail(dto.email);
-    console.log('exsint', existingUser)
     if (existingUser) {
       throw new BadRequestException('Email already exists');
     }
 
     const hashedPassword = await bcrypt.hash(dto.password, 10);
-console.log('hashed, hashedPassword', hashedPassword)
+
     const user = await this.authRepository.create({
       name: dto.name,
       email: dto.email,
