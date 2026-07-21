@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Tender" ALTER COLUMN "fileUrl" DROP NOT NULL,
+ALTER COLUMN "status" DROP NOT NULL;

@@ -8,43 +8,105 @@ datasource db {
 }
 
 model User {
-  id             String        @id @default(uuid())
-  name           String
-  email          String        @unique
-  password       String
-  createdAt      DateTime      @default(now())
-  organizationId String?
-  organization   Organization? @relation(fields: [organizationId], references: [id])
+  id                String           @id @default(uuid())
+  name              String
+  email             String           @unique
+  password          String
+  createdAt         DateTime         @default(now())
+  organizationId    String?
+  organization      Organization?    @relation(fields: [organizationId], references: [id])
+  tenders           Tender[]         @relation("UserTenders")
+  uploadedDocuments TenderDocument[]
 }
 
 model Organization {
-  id        String   @id @default(uuid())
-  name      String
-  industry  String?
-  gstNumber String?
-  turnover  Float?
-  createdAt DateTime @default(now())
-  tenders   Tender[]
-  users     User[]
+  id             String          @id @default(uuid())
+  name           String
+  industry       String?
+  gstNumber      String?
+  turnover       Float?
+  createdAt      DateTime        @default(now())
+  tenders        Tender[]
+  users          User[]
+  companyProfile CompanyProfile?
 }
 
 model Tender {
   id             String           @id @default(uuid())
   title          String
-  fileUrl        String
-  status         String
+  description    String?
+  status         String           @default("Draft")
   createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
   organizationId String
   organization   Organization     @relation(fields: [organizationId], references: [id])
+  createdById    String
+  createdBy      User             @relation("UserTenders", fields: [createdById], references: [id])
   analyses       TenderAnalysis[]
+  documents      TenderDocument[]
+}
+
+model TenderDocument {
+  id String @id @default(uuid())
+
+  tenderId String
+  tender   Tender @relation(fields: [tenderId], references: [id], onDelete: Cascade)
+
+  orgFileName String
+  fileName    String
+  filePath    String
+  mimeType    String
+  fileSize    Int
+
+  uploadedById String
+  uploadedBy   User   @relation(fields: [uploadedById], references: [id])
+
+  documentType String
+
+  createdAt DateTime @default(now())
 }
 
 model TenderAnalysis {
-  id          String @id @default(uuid())
-  summary     Json?
-  eligibility Json?
-  risks       Json?
-  score       Int?
-  tenderId    String
-  tender      Tender @relation(fields: [tenderId], references: [id])
+  id String @id @default(uuid())
+
+  tenderId String @unique
+  tender   Tender @relation(fields: [tenderId], references: [id])
+
+  extractedText          String?   @db.Text
+  summary                String?   @db.Text
+  eligibility            Json?
+  technicalRequirements  Json?
+  financialRequirements  Json?
+  importantDates         Json?
+  risks                  Json?
+  recommendation         Json?
+  recommendationDecision String?
+  score                  Int?
+  aiModel                String?
+  tokensUsed             Int?
+  processingTime         Float?
+  isLatest               Boolean   @default(true)
+  analyzedAt             DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model CompanyProfile {
+  id String @id @default(uuid())
+
+  organizationId String       @unique
+  organization   Organization @relation(fields: [organizationId], references: [id])
+
+  companyName    String
+  turnover       String?
+  experience     String?
+  certifications Json?
+  documents      Json?
+  website        String?
+  employeeCount  Int?
+  industry       String?
+  gstNumber      String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 }

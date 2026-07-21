@@ -14,75 +14,93 @@ export class AuthService {
   ) {}
 
   async register(dto: RegisterDto) {
-    const existingUser = await this.authRepository.findByEmail(dto.email);
-    if (existingUser) {
-      throw new BadRequestException('Email already exists');
+    try {
+      const existingUser = await this.authRepository.findByEmail(dto.email);
+      if (existingUser) {
+        throw new BadRequestException('Email already exists');
+      }
+
+      const hashedPassword = await bcrypt.hash(dto.password, 10);
+
+      const user = await this.authRepository.create({
+        name: dto.name,
+        email: dto.email,
+        password: hashedPassword,
+        ...(dto.organizationId && {
+          organizationId: dto.organizationId,
+      }),
+      });
+
+      return {
+        message: 'User registered successfully',
+        user: {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+        },
+      };
+    } catch (err) {
+        throw new BadRequestException(
+            err?.meta?.cause ?? err?.message ?? 'Unknown Error',
+        );
     }
-
-    const hashedPassword = await bcrypt.hash(dto.password, 10);
-
-    const user = await this.authRepository.create({
-      name: dto.name,
-      email: dto.email,
-      password: hashedPassword,
-      ...(dto.organizationId && {
-        organizationId: dto.organizationId,
-     }),
-    });
-
-    return {
-      message: 'User registered successfully',
-      user: {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-      },
-    };
   }
 
   async login(dto: LoginDto) {
-    const user = await this.authRepository.findByEmail(dto.email);
+    try {
+      const user = await this.authRepository.findByEmail(dto.email);
 
-    if (!user) {
-      throw new UnauthorizedException('Invalid email or password');
-    }
+      if (!user) {
+        throw new UnauthorizedException('Invalid email or password');
+      }
 
-    const passwordMatched = await bcrypt.compare(
-      dto.password,
-      user.password,
-    );
+      const passwordMatched = await bcrypt.compare(
+        dto.password,
+        user.password,
+      );
 
-    if (!passwordMatched) {
-      throw new UnauthorizedException('Invalid email or password');
-    }
+      if (!passwordMatched) {
+        throw new UnauthorizedException('Invalid email or password');
+      }
 
-    const payload = {
-      sub: user.id,
-      email: user.email,
-    };
-
-    return {
-      accessToken: await this.jwtService.signAsync(payload),
-      user: {
-        id: user.id,
-        name: user.name,
+      const payload = {
+        sub: user.id,
         email: user.email,
-      },
-    };
+      };
+
+      return {
+        accessToken: await this.jwtService.signAsync(payload),
+        user: {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+        },
+      };
+    } catch (err) {
+        throw new BadRequestException(
+            err?.meta?.cause ?? err?.message ?? 'Unknown Error',
+        );
+    }
   }
 
   async getCurrentUser(userId: string) {
-    const user = await this.authRepository.findById(userId);
+    try {
+      const user = await this.authRepository.findById(userId);
 
-    if (!user) {
-      throw new UnauthorizedException();
+      if (!user) {
+        throw new UnauthorizedException();
+      }
+
+      return {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        organizationId: user.organizationId,
+      };
+    } catch (err) {
+        throw new BadRequestException(
+            err?.meta?.cause ?? err?.message ?? 'Unknown Error',
+        );
     }
-
-    return {
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      organizationId: user.organizationId,
-    };
   }
 }
