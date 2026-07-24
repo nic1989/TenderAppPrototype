@@ -12,6 +12,7 @@ import { ComplianceModule } from '@modules/compliance/compliance.module';
 import { DashboardModule } from '@modules/dashboard/dashboard.module';
 import { TenderComparisonModule } from '@modules/tender-comparison/tender-comparison.module';
 import { CompanyProfileModule } from '@modules/company-profile/company-profile.module';
+import { ProposalModule } from '@modules/proposals/proposal.module';
 
 @Module({
   imports: [
@@ -29,7 +30,8 @@ import { CompanyProfileModule } from '@modules/company-profile/company-profile.m
     ComplianceModule,
     DashboardModule,
     TenderComparisonModule,
-    CompanyProfileModule
+    CompanyProfileModule,
+    ProposalModule
   ],
 })
 export class AppModule {}

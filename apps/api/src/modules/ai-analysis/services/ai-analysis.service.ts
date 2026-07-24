@@ -40,11 +40,27 @@ export class AiAnalysisService {
             );
         }
 
-        const extractedText = await this.pdfParserService.extractText(documents[0].filePath);
+        const extractedTexts = await Promise.all(
+            documents.map(async (document) => {
+                const text = await this.pdfParserService.extractText(document.filePath);
+                return `
+                    ==============================
+                    Document: ${document.orgFileName}
+                    ==============================
+
+                    ${text}
+                `;
+            }),
+        );
+        const MAX_CHARS = 300000;
+        let extractedText = extractedTexts.join('\n');
         if (!extractedText.trim()) {
             throw new BadRequestException(
                 'No readable text found in the uploaded document.',
             );
+        }
+        if (extractedText.length > MAX_CHARS) {
+            extractedText = extractedText.substring(0, MAX_CHARS);
         }
         const prompt = buildTenderAnalysisPrompt(extractedText);
         const startTime = Date.now();

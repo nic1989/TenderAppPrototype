@@ -17,7 +17,11 @@ export class ComplianceService {
         private readonly companyProfileRepository: CompanyProfileRepository
     ) {}
 
-    async verify(tenderId: string, userId: string) {
+    public async verify(tenderId: string, userId: string): Promise<ComplianceResponse> {
+        return this.generateCompliance(tenderId, userId);
+    }
+
+    async generateCompliance(tenderId: string, userId: string) {
         try {
             const companyProfile = await this.companyProfileRepository.findByUserId(userId);
             if (!companyProfile) {
