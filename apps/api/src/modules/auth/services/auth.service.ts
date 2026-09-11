@@ -66,6 +66,7 @@ export class AuthService {
       const payload = {
         sub: user.id,
         email: user.email,
+        name: user.name
       };
 
       return {
@@ -73,8 +74,8 @@ export class AuthService {
         user: {
           id: user.id,
           name: user.name,
-          email: user.email,
-        },
+          email: user.email
+        }
       };
     } catch (err) {
         throw new BadRequestException(

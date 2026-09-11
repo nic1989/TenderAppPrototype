@@ -169,6 +169,7 @@ export class PropsalController {
                 "employeeCount": 51,
                 "industry": "Civil Infra",
                 "gstNumber": "SJD83r83msKSD",
+                "panNumber": "BMAKDJ039SKJ",
                 "createdAt": new Date("2026-07-21T10:55:36.169Z"),
                 "updatedAt": new Date("2026-07-21T11:10:29.339Z")
             }

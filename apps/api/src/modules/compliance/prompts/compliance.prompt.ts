@@ -109,8 +109,9 @@ export function buildCompanyProfile(profile: CompanyProfile): string {
         Certifications: ${(profile.certifications as string[] ?? []).join(', ')}
         Documents: ${(profile.documents as string[] ?? []).join(', ')}
         EmployeeCount: ${profile.employeeCount}
-        GstNumber: ${profile.gstNumber}
-        Industry: ${profile.industry}
-        Website: ${profile.website}
+        GSTNumber: ${profile.gstNumber}
+        PANNumber: ${profile.panNumber}
+        Industry: ${profile?.industry || ''}
+        Website: ${profile?.website || ''}
     `;
 }

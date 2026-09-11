@@ -25,7 +25,7 @@ export class ComplianceService {
         try {
             const companyProfile = await this.companyProfileRepository.findByUserId(userId);
             if (!companyProfile) {
-                throw new NotFoundException(
+                throw new BadRequestException(
                     'Complete the Company profile to generate compliance record.',
                 );
             }
@@ -86,7 +86,7 @@ export class ComplianceService {
     
         if (!analysis) {
             throw new NotFoundException(
-                'Analysis not found',
+                'This Tender is not analyzed yet.',
             );
         }
 

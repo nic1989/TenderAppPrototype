@@ -12,14 +12,7 @@ export class CompanyProfileService {
     ) {}
 
     async findOrganizationCompany(userId: string) {
-        const companyProfile = await this.companyProfileRepository.findByUserId(userId);
-        if (!companyProfile) {
-            throw new NotFoundException(
-                'Company profile not found.',
-            );
-        }
-
-        return companyProfile;
+        return await this.companyProfileRepository.findByUserId(userId);
     }
 
     async create(dto: CreateCompanyProfileDto, userId: string) {
@@ -40,6 +33,7 @@ export class CompanyProfileService {
                 documents: dto?.documents,
                 employeeCount: dto?.employeeCount,
                 gstNumber: dto?.gstNumber,
+                panNumber: dto?.panNumber,
                 industry: dto?.industry,
                 website: dto?.website,
                 organizationId: user.organizationId!

@@ -153,7 +153,7 @@ export class ProposalPdfService {
         const pdfBytes = await this.pdf.save();
 
         const isoDate = new Date().toISOString().replace('T', ' ').replace('Z', '').split('.')[0];
-        console.log('ison', isoDate)
+
         res.setHeader('Content-Type', 'application/pdf');
         res.setHeader(
             'Content-Disposition',

@@ -82,7 +82,7 @@ export class TenderService {
                 });
             }
             return {
-                message: 'Delete Successfully'
+                message: 'Tender Successfully Deleted'
             }
         } catch (err) {
             throw new BadRequestException(

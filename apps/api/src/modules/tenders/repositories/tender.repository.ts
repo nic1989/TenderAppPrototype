@@ -37,6 +37,7 @@ export class TenderRepository {
             where: { id },
             include: {
                 documents: true,
+                analyses: true
             },
         });
     }

@@ -28,6 +28,10 @@ export class CreateCompanyProfileDto {
     @IsOptional()
     @IsString()
     gstNumber: string;
+    
+    @IsOptional()
+    @IsString()
+    panNumber: string;
 
     @IsOptional()
     @IsString()

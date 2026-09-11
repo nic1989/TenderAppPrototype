@@ -107,6 +107,7 @@ model CompanyProfile {
   employeeCount  Int?
   industry       String?
   gstNumber      String?
+  panNumber      String?
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 }
